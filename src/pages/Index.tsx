@@ -1,18 +1,22 @@
 import { useState } from "react";
-import CategoryPanel from "@/components/CategoryPanel";
+import Header from "@/components/Header";
+import CategoryBar from "@/components/CategoryBar";
 import ProductGrid from "@/components/ProductGrid";
-import OrderCart from "@/components/OrderCart";
+import OrderSidebar from "@/components/OrderSidebar";
+import SearchBar from "@/components/SearchBar";
 
 interface CartItem {
   id: string;
   name: string;
   price: number;
   quantity: number;
+  image: string;
 }
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("burgers");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddToCart = (product: any) => {
     setCartItems((prev) => {
@@ -48,23 +52,36 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      <CategoryPanel
-        selectedCategory={selectedCategory}
-        onCategorySelect={setSelectedCategory}
-      />
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <Header />
 
-      <ProductGrid
-        selectedCategory={selectedCategory}
-        onAddToCart={handleAddToCart}
-      />
+      <div className="flex-1 flex">
+        <div className="flex-1 flex flex-col">
+          <div className="bg-white border-b border-slate-200 p-4">
+            <SearchBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+            />
+            <CategoryBar
+              selectedCategory={selectedCategory}
+              onCategorySelect={setSelectedCategory}
+            />
+          </div>
 
-      <OrderCart
-        items={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onCheckout={handleCheckout}
-      />
+          <ProductGrid
+            selectedCategory={selectedCategory}
+            searchQuery={searchQuery}
+            onAddToCart={handleAddToCart}
+          />
+        </div>
+
+        <OrderSidebar
+          items={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+          onCheckout={handleCheckout}
+        />
+      </div>
     </div>
   );
 };
